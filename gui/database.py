@@ -15,5 +15,12 @@ def loadTransactions(accountId):
 
 def loginAuth(fullName, password):
     accountsData = loadDatabase()
-    accountsName = accountsData.iloc[1]
-    accountsName.iloc[fullName]
+    match = accountsData[(accountsData['account_name'] == fullName) & (accountsData['password'] == password)]
+
+    if not match.empty:
+        accountId = match.index[0]
+        print(f"Login successful! Account ID: {accountId}")
+        return accountId
+    else:
+        print("Login failed! Invalid full name or password.")
+        return -1

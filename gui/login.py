@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 import hashlib
+from database import loginAuth
+from home import HomeView
 
 
 class MainWindow(QMainWindow):
@@ -82,10 +84,12 @@ class MainWindow(QMainWindow):
 
         hashedPassword = hashlib.md5(password.encode()).hexdigest()
 
-        from database import loginAuth
-        loginAuth(fullName, hashedPassword)
+        res = loginAuth(fullName, hashedPassword)
+        self.loadHome(res)
 
-
+    def loadHome(self, accountID):
+        home = HomeView(accountID)
+        self.setCentralWidget(home)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
