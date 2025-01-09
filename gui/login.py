@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QFrame, QPushButton,
+    QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QFrame, QPushButton, QLabel,
 )
 from PyQt5.QtCore import Qt
 import hashlib
@@ -59,11 +59,20 @@ class MainWindow(QMainWindow):
         """)
         cardLayout.addWidget(self.passwordInput)
 
+        self.errorLabel = QLabel()
+        self.errorLabel.setStyleSheet("""
+            QLabel {
+                color: #ff0000;
+                border: 0px;
+            }
+        """)
+        self.errorLabel.setFixedSize(300, 15)
+        cardLayout.addWidget(self.errorLabel, alignment=Qt.AlignCenter)
+
         self.loginButton = QPushButton("Login")
         self.loginButton.clicked.connect(self.login)
         self.loginButton.setStyleSheet("""
             QPushButton {
-            
             }
         """)
         cardLayout.addWidget(self.loginButton)
@@ -85,7 +94,11 @@ class MainWindow(QMainWindow):
         hashedPassword = hashlib.md5(password.encode()).hexdigest()
 
         res = loginAuth(fullName, hashedPassword)
-        self.loadHome(res)
+
+        if res == -1:
+            self.errorLabel.setText("Invalid username or password")
+        else:
+            self.loadHome(res)
 
     def loadHome(self, accountID):
         home = HomeView(accountID)

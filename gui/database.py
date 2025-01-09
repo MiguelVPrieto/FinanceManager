@@ -19,8 +19,6 @@ def loginAuth(fullName, password):
 
     if not match.empty:
         accountId = match.index[0]
-        print(f"Login successful! Account ID: {accountId}")
         return accountId
     else:
-        print("Login failed! Invalid full name or password.")
         return -1
