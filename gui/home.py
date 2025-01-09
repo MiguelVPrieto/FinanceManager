@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (
 )
 
 
-class HomeView(QWidget):
+class Home(QWidget):
     def __init__(self, accountID):
         super().__init__()
         self.setWindowTitle("Finance Manager")

@@ -1,15 +1,10 @@
-import sys
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QFrame, QPushButton, QLabel,
+    QVBoxLayout, QWidget, QLineEdit, QFrame, QPushButton, QLabel, QMainWindow,
 )
 from PyQt5.QtCore import Qt
-import hashlib
-from database import loginAuth
-from signup import SignUp
-from home import Home
 
 
-class MainWindow(QMainWindow):
+class SignUp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Finance Manager")
@@ -47,6 +42,18 @@ class MainWindow(QMainWindow):
         """)
         cardLayout.addWidget(self.fullNameInput)
 
+        self.balanceInput = QLineEdit()
+        self.balanceInput.setPlaceholderText("Balance")
+        self.balanceInput.setStyleSheet("""
+            QLineEdit {
+                margin-bottom: 10px;
+                padding: 8px;
+                border: 1px solid #cccccc;
+                border-radius: 5px;
+            }
+        """)
+        cardLayout.addWidget(self.balanceInput)
+
         self.passwordInput = QLineEdit()
         self.passwordInput.setPlaceholderText("Password")
         self.passwordInput.setEchoMode(QLineEdit.Password)
@@ -60,6 +67,19 @@ class MainWindow(QMainWindow):
         """)
         cardLayout.addWidget(self.passwordInput)
 
+        self.cPasswordInput = QLineEdit()
+        self.cPasswordInput.setPlaceholderText("Confirm Password")
+        self.cPasswordInput.setEchoMode(QLineEdit.Password)
+        self.cPasswordInput.setStyleSheet("""
+            QLineEdit {
+                margin-top: 10px;
+                padding: 8px;
+                border: 1px solid #cccccc;
+                border-radius: 5px;
+            }
+        """)
+        cardLayout.addWidget(self.cPasswordInput)
+
         self.errorLabel = QLabel()
         self.errorLabel.setStyleSheet("""
             QLabel {
@@ -70,22 +90,22 @@ class MainWindow(QMainWindow):
         self.errorLabel.setFixedSize(300, 15)
         cardLayout.addWidget(self.errorLabel, alignment=Qt.AlignCenter)
 
-        self.loginButton = QPushButton("Login")
-        self.loginButton.clicked.connect(self.login)
+        self.loginButton = QPushButton("Create Account")
+        self.loginButton.clicked.connect(self.createAccount)
         self.loginButton.setStyleSheet("""
             QPushButton {
             }
         """)
         cardLayout.addWidget(self.loginButton)
 
-        self.signupLink = QPushButton("Don't have an account?")
-        self.signupLink.clicked.connect(self.loadSignUp)
+        self.signupLink = QPushButton("Already have an account?")
+        self.signupLink.clicked.connect(self.loadLogin)
         self.signupLink.setStyleSheet("""
             QPushButton {
                 border: 0px;
                 text-decoration: none;
             }
-            
+
             QPushButton:hover {
                 text-decoration: underline;
             }
@@ -102,29 +122,10 @@ class MainWindow(QMainWindow):
 
         self.showMaximized()
 
-    def login(self):
-        fullName = self.fullNameInput.text()
-        password = self.passwordInput.text()
+    def loadLogin(self):
+        from login import MainWindow
+        login = MainWindow()
+        self.setCentralWidget(login)
 
-        hashedPassword = hashlib.md5(password.encode()).hexdigest()
-
-        res = loginAuth(fullName, hashedPassword)
-
-        if res == -1:
-            self.errorLabel.setText("Invalid username or password")
-        else:
-            self.loadHome(res)
-
-    def loadHome(self, accountID):
-        home = Home(accountID)
-        self.setCentralWidget(home)
-
-    def loadSignUp(self):
-        signup = SignUp()
-        self.setCentralWidget(signup)
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec_())
+    def createAccount(self):
+        print("Creating Account")

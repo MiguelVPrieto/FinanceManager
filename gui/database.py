@@ -8,7 +8,7 @@ def loadDatabase():
 
 def loadTransactions(accountId):
     accountsData = loadDatabase()
-    transactionsID = accountsData.iloc[accountId, 7]
+    transactionsID = accountsData.iloc[accountId, 6]
     formattedTransactionsID = str(transactionsID).zfill(4)
     transactionsData = pd.read_excel(database, sheet_name=str(formattedTransactionsID), engine='openpyxl')
     return transactionsData
