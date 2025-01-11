@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import (
     QVBoxLayout, QWidget, QLineEdit, QFrame, QPushButton, QLabel, QMainWindow,
 )
 from PyQt5.QtCore import Qt
-
+import hashlib
+from database import create
 
 class SignUp(QMainWindow):
     def __init__(self):
@@ -26,7 +27,7 @@ class SignUp(QMainWindow):
                 padding: 20px;
             }
         """)
-        self.card.setFixedSize(350, 235)
+        self.card.setFixedSize(350, 300)
 
         cardLayout = QVBoxLayout()
 
@@ -59,7 +60,7 @@ class SignUp(QMainWindow):
         self.passwordInput.setEchoMode(QLineEdit.Password)
         self.passwordInput.setStyleSheet("""
             QLineEdit {
-                margin-top: 10px;
+                margin-bottom: 10px;
                 padding: 8px;
                 border: 1px solid #cccccc;
                 border-radius: 5px;
@@ -72,7 +73,7 @@ class SignUp(QMainWindow):
         self.cPasswordInput.setEchoMode(QLineEdit.Password)
         self.cPasswordInput.setStyleSheet("""
             QLineEdit {
-                margin-top: 10px;
+                margin-bottom: 10px;
                 padding: 8px;
                 border: 1px solid #cccccc;
                 border-radius: 5px;
@@ -128,4 +129,20 @@ class SignUp(QMainWindow):
         self.setCentralWidget(login)
 
     def createAccount(self):
-        print("Creating Account")
+        fullName = self.fullNameInput.text()
+        balance = self.balanceInput.text()
+        password = self.passwordInput.text()
+        cPassword = self.cPasswordInput.text()
+
+        if password != cPassword:
+            self.errorLabel.setText("Passwords do not match")
+        else:
+            hashedPassword = hashlib.sha256(password.encode()).hexdigest()
+            res = create(fullName, balance, hashedPassword)
+
+            if res == -1:
+                self.errorLabel.setText("An account already exists with that name")
+            elif res == -2:
+                self.errorLabel.setText("Account creation failed: DB-1.0")
+            else:
+                self.loadLogin()

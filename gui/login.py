@@ -106,7 +106,7 @@ class MainWindow(QMainWindow):
         fullName = self.fullNameInput.text()
         password = self.passwordInput.text()
 
-        hashedPassword = hashlib.md5(password.encode()).hexdigest()
+        hashedPassword = hashlib.sha256(password.encode()).hexdigest()
 
         res = loginAuth(fullName, hashedPassword)
 
